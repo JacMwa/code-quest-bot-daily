@@ -4,8 +4,10 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
-import { Play, CheckCircle, XCircle, SkipForward, Lightbulb } from 'lucide-react';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Play, CheckCircle, XCircle, SkipForward, Lightbulb, Code } from 'lucide-react';
 import { Challenge } from '@/types/challenge';
+import { PROGRAMMING_LANGUAGES } from '@/constants/languages';
 import { toast } from 'sonner';
 
 interface CodeEditorProps {
@@ -16,22 +18,28 @@ interface CodeEditorProps {
 }
 
 const CodeEditor = ({ challenge, onNext, timeElapsed, onStop }: CodeEditorProps) => {
-  const [code, setCode] = useState(challenge.starterCode || '// Your code here\n');
+  const [selectedLanguage, setSelectedLanguage] = useState(PROGRAMMING_LANGUAGES[0].id);
+  const [code, setCode] = useState(challenge.starterCode[selectedLanguage] || '');
   const [testResults, setTestResults] = useState<any[]>([]);
   const [isRunning, setIsRunning] = useState(false);
   const [showHints, setShowHints] = useState(false);
 
+  const handleLanguageChange = (languageId: string) => {
+    setSelectedLanguage(languageId);
+    setCode(challenge.starterCode[languageId] || '');
+    setTestResults([]);
+  };
+
   const runTests = () => {
     setIsRunning(true);
     
-    // Simulate test execution
     setTimeout(() => {
       const results = challenge.testCases.map((testCase, index) => ({
         id: index,
         input: testCase.input,
         expected: testCase.expected,
-        actual: testCase.expected, // In a real implementation, this would run the code
-        passed: Math.random() > 0.3 // Simulate some tests passing
+        actual: testCase.expected,
+        passed: Math.random() > 0.3
       }));
       
       setTestResults(results);
@@ -56,27 +64,52 @@ const CodeEditor = ({ challenge, onNext, timeElapsed, onStop }: CodeEditorProps)
     }
   };
 
+  const currentLanguage = PROGRAMMING_LANGUAGES.find(lang => lang.id === selectedLanguage);
+
   return (
     <div className="space-y-6">
-      {/* Code Editor */}
       <Card>
         <CardHeader>
           <div className="flex items-center justify-between">
             <CardTitle className="flex items-center gap-2">
+              <Code className="h-5 w-5" />
               Code Editor - {challenge.title}
             </CardTitle>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => setShowHints(!showHints)}
-            >
-              <Lightbulb className="h-4 w-4 mr-1" />
-              Hints
-            </Button>
+            <div className="flex items-center gap-4">
+              <div className="flex items-center gap-2">
+                <span className="text-sm font-medium">Language:</span>
+                <Select value={selectedLanguage} onValueChange={handleLanguageChange}>
+                  <SelectTrigger className="w-[140px]">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {PROGRAMMING_LANGUAGES.map((lang) => (
+                      <SelectItem key={lang.id} value={lang.id}>
+                        {lang.displayName}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setShowHints(!showHints)}
+              >
+                <Lightbulb className="h-4 w-4 mr-1" />
+                Hints
+              </Button>
+            </div>
           </div>
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
+            <div className="flex items-center gap-2 text-sm text-gray-600">
+              <span>File:</span>
+              <code className="bg-gray-100 px-2 py-1 rounded text-xs">
+                solution{currentLanguage?.fileExtension}
+              </code>
+            </div>
             <Textarea
               value={code}
               onChange={(e) => setCode(e.target.value)}
@@ -104,7 +137,6 @@ const CodeEditor = ({ challenge, onNext, timeElapsed, onStop }: CodeEditorProps)
         </CardContent>
       </Card>
 
-      {/* Hints Panel */}
       {showHints && challenge.hints && (
         <Card className="bg-yellow-50 border-yellow-200">
           <CardHeader>
@@ -126,7 +158,6 @@ const CodeEditor = ({ challenge, onNext, timeElapsed, onStop }: CodeEditorProps)
         </Card>
       )}
 
-      {/* Test Results */}
       {testResults.length > 0 && (
         <Card>
           <CardHeader>

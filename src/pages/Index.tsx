@@ -50,7 +50,6 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-teal-50">
-      {/* Header */}
       <header className="bg-white/80 backdrop-blur-sm border-b border-blue-100 sticky top-0 z-10">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
@@ -81,9 +80,7 @@ const Index = () => {
 
       <div className="container mx-auto px-4 py-8">
         <div className="grid lg:grid-cols-3 gap-8">
-          {/* Main Challenge Area */}
           <div className="lg:col-span-2 space-y-6">
-            {/* Bot Message */}
             <Card className="bg-gradient-to-r from-blue-500 to-teal-500 text-white border-0">
               <CardContent className="p-6">
                 <div className="flex items-start gap-4">
@@ -111,7 +108,6 @@ const Index = () => {
               </CardContent>
             </Card>
 
-            {/* Timer */}
             {isTimerRunning && (
               <Card className="bg-yellow-50 border-yellow-200">
                 <CardContent className="p-4">
@@ -128,7 +124,6 @@ const Index = () => {
               </Card>
             )}
 
-            {/* Challenge or Editor */}
             {!showEditor ? (
               <ChallengeCard 
                 challenge={currentChallenge} 
@@ -144,7 +139,6 @@ const Index = () => {
             )}
           </div>
 
-          {/* Sidebar */}
           <div className="space-y-6">
             <StatsPanel 
               streak={currentStreak}
@@ -152,7 +146,6 @@ const Index = () => {
               challenges={challenges}
             />
 
-            {/* Achievements */}
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
@@ -182,7 +175,6 @@ const Index = () => {
               </CardContent>
             </Card>
 
-            {/* Progress to Next Level */}
             <Card>
               <CardHeader>
                 <CardTitle>Progress to Intermediate</CardTitle>

@@ -12,9 +12,18 @@ export interface Challenge {
     explanation?: string;
   }[];
   hints?: string[];
-  starterCode?: string;
+  starterCode: {
+    [key: string]: string;
+  };
   testCases: {
     input: string;
     expected: string;
   }[];
+}
+
+export interface ProgrammingLanguage {
+  id: string;
+  name: string;
+  displayName: string;
+  fileExtension: string;
 }
